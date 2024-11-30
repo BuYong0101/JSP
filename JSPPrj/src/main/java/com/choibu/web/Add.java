@@ -1,32 +1,34 @@
 package com.choibu.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/hi")
-public class Nana extends HttpServlet {
 
-	@Override
+@WebServlet("/add")
+public class Add extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		
-		PrintWriter out = response.getWriter();
+		String x_ = request.getParameter("x");
+		String y_ = request.getParameter("y");
 		
-		String cnt_ = request.getParameter("cnt");
+		int x = 0;
+		int y = 0;
 		
-		int cnt = 100;
-		if(cnt_ != null && !cnt_.equals(""))
-			cnt = Integer.parseInt(cnt_);
+		if(!x_.equals("")) x = Integer.parseInt(x_);
+		if(!y_.equals("")) y = Integer.parseInt(y_);
 		
-		for(int i=0; i<cnt; i++)
-			out.println((i+1)+"Hello Servlet~~<br>");
+		int result = x + y;
+		
+		response.getWriter().printf("result is %d\n", result);
 	}
+
 }
