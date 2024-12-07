@@ -1,40 +1,8 @@
-<%@page import="java.util.Date"%>
-<%@page import="java.sql.PreparedStatement"%>
-<%@page import="java.sql.ResultSet"%>
-<%@page import="java.sql.Statement"%>
-<%@page import="java.sql.DriverManager"%>
-<%@page import="java.sql.Connection"%>
+<%@page import="com.choibu.web.entity.Notice"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
-<%
-
-int id = Integer.parseInt(request.getParameter("id"));
-
-String url = "jdbc:oracle:thin:@localhost:1521/xe";
-String sql = "SELECT * FROM NOTICE WHERE ID=?";
-
-Class.forName("oracle.jdbc.OracleDriver");
-Connection con = DriverManager.getConnection(url, "scott", "tiger");
-PreparedStatement st = con.prepareStatement(sql);
-st.setInt(1, id);
-
-ResultSet rs = st.executeQuery();
-
-rs.next();
-
-String title = rs.getString("TITLE");
-String writerId = rs.getString("WRITER_ID");
-Date regdate = rs.getDate("REGDATE");
-String hit = rs.getString("HIT");
-String files = rs.getString("FILES");
-String content = rs.getString("CONTENT");   
- 
-
-rs.close();
-st.close();
-con.close();
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>   
 <!DOCTYPE html>
 <html>
 
@@ -59,7 +27,7 @@ con.close();
 <body>
     <!-- header 부분 -->
 
-	<header id="header">
+    <header id="header">
         
         <div class="content-container">
             <!-- ---------------------------<header>--------------------------------------- -->
@@ -163,76 +131,98 @@ con.close();
 			</aside>
 			<!-- --------------------------- main --------------------------------------- -->
 
+
+
+		<main class="main">
+			<h2 class="main title">공지사항</h2>
 			
+			<div class="breadcrumb">
+				<h3 class="hidden">경로</h3>
+				<ul>
+					<li>home</li>
+					<li>고객센터</li>
+					<li>공지사항</li>
+				</ul>
+			</div>
+			
+			<div class="search-form margin-top first align-right">
+				<h3 class="hidden">공지사항 검색폼</h3>
+				<form class="table-form">
+					<fieldset>
+						<legend class="hidden">공지사항 검색 필드</legend>
+						<label class="hidden">검색분류</label>
+						<select name="f">
+							<option  value="title">제목</option>
+							<option  value="writerId">작성자</option>
+						</select> 
+						<label class="hidden">검색어</label>
+						<input type="text" name="q" value=""/>
+						<input class="btn btn-search" type="submit" value="검색" />
+					</fieldset>
+				</form>
+			</div>
+			
+			<div class="notice margin-top">
+				<h3 class="hidden">공지사항 목록</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="w60">번호</th>
+							<th class="expand">제목</th>
+							<th class="w100">작성자</th>
+							<th class="w100">작성일</th>
+							<th class="w60">조회수</th>
+						</tr>
+					</thead>
+					<tbody>
+							
+					<%-- <%
+					List<Notice> list = (List<Notice>)request.getAttribute("list");
+					for(Notice n : list){
+						pageContext.setAttribute("n", n);
+					%> --%>
+					<c:forEach var="n" items="${list}">
+					<tr>
+						<td>${n.id}</td>
+						<td class="title indent text-align-left"><a href="detail?id=${n.id}">${n.title}</a></td>
+						<td>${n.writerId}</td>
+						<td>${n.regdate}</td>
+						<td>${n.hit}</td>
+					</tr>	
+					</c:forEach>	
+					<%-- <%}%>  --%>
+					
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="indexer margin-top align-right">
+				<h3 class="hidden">현재 페이지</h3>
+				<div><span class="text-orange text-strong">1</span> / 1 pages</div>
+			</div>
 
-
-			<main>
-				<h2 class="main title">공지사항</h2>
+			<div class="margin-top align-center pager">	
+		
+	<div>
+		
+		
+		<span class="btn btn-prev" onclick="alert('이전 페이지가 없습니다.');">이전</span>
+		
+	</div>
+	<ul class="-list- center">
+		<li><a class="-text- orange bold" href="?p=1&t=&q=" >1</a></li>
 				
-				<div class="breadcrumb">
-					<h3 class="hidden">breadlet</h3>
-					<ul>
-						<li>home</li>
-						<li>고객센터</li>
-						<li>공지사항</li>
-					</ul>
-				</div>
-				<div class="margin-top first">
-						<h3 class="hidden">공지사항 내용</h3>
-						<table class="table">
-							<tbody>
-								<tr>
-									<th>제목</th>
-									<td class="text-align-left text-indent text-strong text-orange" colspan="3"><%=title %></td>
-								</tr>
-								<tr>
-									<th>작성일</th>
-									<td class="text-align-left text-indent" colspan="3"><%=regdate %></td>
-								</tr>
-								<tr>
-									<th>작성자</th>
-									<td><%=writerId %></td>
-									<th>조회수</th>
-									<td><%=hit %></td>
-								</tr>
-								<tr>
-									<th>첨부파일</th>
-									<td colspan="3"><%=files %></td>
-								</tr>
-								<tr class="content">
-									<td colspan="4"><%=content %></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					
-					<div class="margin-top text-align-center">
-						<a class="btn btn-list" href="list.jsp">목록</a>
-					</div>
-					
-					<div class="margin-top">
-						<table class="table border-top-default">
-							<tbody>
-								
-								<tr>
-									<th>다음글</th>
-									<td colspan="3"  class="text-align-left text-indent">다음글이 없습니다.</td>
-								</tr>
-								
-									
-								
-								
-								<tr>
-									<th>이전글</th>
-									<td colspan="3"  class="text-align-left text-indent"><a class="text-blue text-strong" href="">스프링 DI 예제 코드</a></td>
-								</tr>
-								
-								
-							</tbody>
-						</table>
-					</div>			
-					
-			</main>		
+	</ul>
+	<div>
+		
+		
+			<span class="btn btn-next" onclick="alert('다음 페이지가 없습니다.');">다음</span>
+		
+	</div>
+	
+			</div>
+		</main>
+		
 			
 		</div>
 	</div>
