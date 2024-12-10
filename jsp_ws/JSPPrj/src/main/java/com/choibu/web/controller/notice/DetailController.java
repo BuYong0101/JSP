@@ -1,4 +1,4 @@
-package com.choibu.web.controller;
+package com.choibu.web.controller.notice;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -18,7 +18,7 @@ import com.choibu.web.entity.Notice;
 import com.choibu.web.service.NoticeService;
 
 @WebServlet("/notice/detail")
-public class NoticeDetailController extends HttpServlet{
+public class DetailController extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		

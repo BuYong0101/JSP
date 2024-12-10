@@ -1,4 +1,4 @@
-package com.choibu.web.controller;
+package com.choibu.web.controller.notice;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -21,7 +21,7 @@ import com.choibu.web.entity.NoticeView;
 import com.choibu.web.service.NoticeService;
 
 @WebServlet("/notice/list")
-public class NoticeListController extends HttpServlet {
+public class ListController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 				
@@ -42,11 +42,11 @@ public class NoticeListController extends HttpServlet {
 			page = Integer.parseInt(page_);
 		
 		NoticeService service = new NoticeService();
-		List<NoticeView> list = service.getNoticeList(field, query, page);
+		List<NoticeView> list = service.getNoticePubList(field, query, page);
 		int count = service.getNoticeCount(field, query);
 	
 		request.setAttribute("list", list);
-		request.setAttribute("count", count);;
+		request.setAttribute("count", count);
 		
 		
 		request.getRequestDispatcher("/WEB-INF/view/notice/list.jsp")
